@@ -1,0 +1,19 @@
+<launch>
+	<!-- odometry-ish-->
+	<param name="~base_frame_id" value="base_footprint"/>
+	<param name="~odom_frame_id" value="odom"/>
+	<param name="~imu_frame" value="IMU_link"/>
+	<param name="encoder_min" value="-1073741824"/>
+	<param name="encoder_max" value="1073741824"/>
+	<param name="ticks_meter" value="354000" />
+	<param name="~base_width" value="0.262" /> <!--0.34-->
+	
+	
+	<node pkg="differential_drive" type="diff_tf1.py" name="diff_drive1" output="screen">
+        <!--<remap from="/odom" to="/wheelodom"/>-->
+       </node>
+       <node pkg="tf2_ros" type="static_transform_publisher" name="base_footprint_to_base_link" args="0 0 0.06 0.0 0 0.0  /base_footprint /base_link"/>
+       <node pkg="tf2_ros" type="static_transform_publisher" name="base_footprint_to_usb_cam" args="0 0 0.0 0.0 0 0.0  /base_footprint /usb_cam"/>
+    
+      <!-- <node pkg="mpu_6050_driver" type="imu_node.py" name="mpu_6050_driver" output="screen"/>-->
+</launch>

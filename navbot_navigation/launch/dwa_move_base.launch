@@ -1,0 +1,49 @@
+<launch>
+
+<!-- Map File -->
+ <include file="$(find rplidar_ros)/launch/rplidar.launch"/>
+<include file="$(find odom_pkg)/launch/tf_controller.launch"/>
+<!--<include file="$(find laser_scan_matcher)/demo/demo.launch"/>
+<include file="$(find mpu_6050_driver)/launch/imu_demo.launch"/>-->
+<node pkg="hexa_walk" name="hexa_walk1" type="test1.py"  />
+ <!--<arg name="map_file" default="$(find navbot_navigation)/maps/AI3.yaml"/>-->
+ <arg name="map_file" default="$(find navbot_navigation)/maps/reception.yaml"/>
+	
+ <!-- Map Server -->
+    <node pkg="map_server" name="map_server" type="map_server" args="$(arg map_file)" />
+	
+  
+  <!--<include file="$(find navbot_navigation)/launch/amcl.launch"/>-->
+  <node pkg="tf2_ros" type="static_transform_publisher" name="base" args="0 0 0.0 0.0 0 0.0  /map /odom"/>
+  <include file="$(find robot_localization)/launch/ekf_template.launch"/>
+  <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
+
+    <rosparam file="$(find navbot_navigation)/param/costmap_common_params.yaml" command="load" ns="global_costmap" />
+    <rosparam file="$(find navbot_navigation)/param/costmap_common_params.yaml" command="load" ns="local_costmap" />
+    <rosparam file="$(find navbot_navigation)/param/local_costmap_params.yaml" command="load" />
+    <rosparam file="$(find navbot_navigation)/param/global_costmap_params.yaml" command="load" />
+    <rosparam file="$(find navbot_navigation)/param/move_base_params.yaml" command="load" />
+    <rosparam file="$(find navbot_navigation)/param/dwa_local_planner_params.yaml" command="load" />
+    <rosparam file="$(find navbot_navigation)/param/global_planner_params.yaml" command="load" />
+   <!-- <remap from="cmd_vel" to="$(arg cmd_vel_topic)"/>-->
+   <remap from="odom" to ="odometry/filtered"/>
+   
+
+    <param name="base_local_planner" value="dwa_local_planner/DWAPlannerROS" />
+    <!--<param name="controller_frequency" value="10.0" />-->
+    
+     <!--<param name="base_global_planner" value="navfn/NavfnROS" />-->
+    
+    
+    
+     <!-- not sure whether needed or not. added to avoid in-place rotation-->
+    <param name="clearing_rotation_allowed" value="true"/> 
+    
+   
+
+    
+    
+
+  </node>
+  <!--<node pkg="tf2_ros" type="static_transform_publisher" name="base" args="0 0 0.0 0.0 0 0.0  /map /odom"/>-->
+</launch>

@@ -1,0 +1,22 @@
+<launch>
+
+ <!-- Run the map server --> 
+ 
+   <arg name="map_file" default="$(find navbot_navigation)/maps/AI_LAB.yaml"/>
+    
+  <node name="map_server" pkg="map_server" type="map_server" args="$(arg map_file)"/> 
+ <!--- Run AMCL --> 
+    <include file="$(find navbot_navigation)/launch/amcl1.launch" />
+
+   <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
+    <rosparam file="$(find navbot_navigation)/param1/costmap_common_params.yaml" command="load" ns="global_costmap" /> 
+    <rosparam file="$(find navbot_navigation)/param1/costmap_common_params.yaml" command="load" ns="local_costmap" />
+    <rosparam file="$(find navbot_navigation)/param1/local_costmap_params.yaml" command="load" />
+    <rosparam file="$(find navbot_navigation)/param1/global_costmap_params.yaml" command="load" /> 
+    <rosparam file="$(find navbot_navigation)/param1/base_local_planner_params.yaml" command="load" />
+   <rosparam file="$(find navbot_navigation)/param1/move_base_params.yaml" command="load" />
+    <!--<rosparam file="$(find navbot_navigation)/param1/dwa_local_planner_params.yaml" command="load" />-->
+  <!--<remap from="/camera/odom/sample" to="/odom"/>-->
+  </node>
+
+</launch> 
